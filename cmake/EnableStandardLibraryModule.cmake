@@ -21,6 +21,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     set(CMAKE_CXX_STANDARD_REQUIRED YES)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-nostdinc++>)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-isystem>)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:${LIBCXX_BUILD}/include/c++/v1>)
+
+    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-nostdlib++>)
+    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-L${LIBCXX_BUILD}/lib>)
+    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-Wl,-rpath,${LIBCXX_BUILD}/lib>)
+
     include(FetchContent)
     FetchContent_Declare(
         std
@@ -30,18 +38,17 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     )
     FetchContent_MakeAvailable(std)
 
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fprebuilt-module-path=${std_BINARY_DIR}/CMakeFiles/std.dir/>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fprebuilt-module-path=${std_BINARY_DIR}/CMakeFiles/std.compat.dir/>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-nostdinc++>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-isystem>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:${LIBCXX_BUILD}/include/c++/v1>)
-
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-nostdlib++>)
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-L${LIBCXX_BUILD}/lib>)
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-Wl,-rpath,${LIBCXX_BUILD}/lib>)
+    add_library(std)
+    target_sources(std PUBLIC
+        FILE_SET CXX_MODULES
+        BASE_DIRS ${std_SOURCE_DIR}
+        FILES
+            ${std_SOURCE_DIR}/std.cppm
+            ${std_SOURCE_DIR}/std.compat.cppm
+    )
+    target_compile_options(std PRIVATE -Wreserved-module-identifier)
 
     link_libraries(std c++)
-    link_libraries(std.compat c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
     # For MSVC, Standard Library Module is automatically enabled for C++23.
 else()
