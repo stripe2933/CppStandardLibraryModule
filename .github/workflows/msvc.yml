@@ -1,0 +1,28 @@
+name: Windows
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: seanmiddleditch/gha-setup-vsdevenv@master
+
+      - name: Configure
+        run: |
+          mkdir build
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" -T v143 `
+            -DVCTOOLS_INSTALL_DIR="$env:VCToolsInstallDir"
+
+      - name: Build
+        run: |
+          cmake --build build --config Release -j4
+
+      - name: Run executable
+        run: |
+          build/Release/CppStandardLibraryModule.exe
