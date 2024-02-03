@@ -25,4 +25,4 @@ jobs:
 
       - name: Run executable
         run: |
-          ./build/CppStandardLibraryModule
+          build/Release/CppStandardLibraryModule.exe
