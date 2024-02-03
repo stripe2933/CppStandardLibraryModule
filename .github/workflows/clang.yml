@@ -30,7 +30,7 @@ jobs:
           mkdir build
           cmake -S . -G "Ninja" -B build \
             -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@17)/bin/clang++ \
-            -DLIBCXX_BUILD=./llvm-project/build
+            -DLIBCXX_BUILD=$(realpath llvm-project/build)
 
       - name: Build
         run: |
