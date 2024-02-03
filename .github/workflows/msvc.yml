@@ -10,6 +10,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: seanmiddleditch/gha-setup-vsdevenv@master
+
       - name: Configure
         run: |
           mkdir build
