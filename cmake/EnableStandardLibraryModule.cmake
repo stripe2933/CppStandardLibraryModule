@@ -56,8 +56,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VER
         FILE_SET CXX_MODULES
         BASE_DIRS ${std_SOURCE_DIR}
         FILES
-            ${std_SOURCE_DIR}std.ixx
-            ${std_SOURCE_DIR}std.compat.ixx
+            ${std_SOURCE_DIR}/std.ixx
+            ${std_SOURCE_DIR}/std.compat.ixx
     )
 
     link_libraries(std c++)
