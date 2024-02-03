@@ -59,6 +59,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VER
             ${std_SOURCE_DIR}/std.ixx
             ${std_SOURCE_DIR}/std.compat.ixx
     )
+
+    link_libraries(std)
 else()
     message(FATAL_ERROR "C++23 Standard library module is not supported with current compiler.")
 endif()
