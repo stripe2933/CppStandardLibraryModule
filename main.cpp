@@ -1,9 +1,22 @@
+#include <cerrno>
+
 import std;
+import std.compat;
 
 int main() {
-    std::print("Enter your name: ");
-    std::string name;
-    std::cin >> name;
+    std::ifstream file { std::source_location::current().file_name() };
+    if (!file) {
+        std::cerr << "Failed to open file: " << strerror(errno) << '\n';
+        std::abort();
+    }
 
-    std::println("Hello, {}!", name);
+    // Read file and store into buffer.
+    file.seekg(0, std::ios::end);
+    const std::size_t fileSize = file.tellg();
+    std::string buffer(fileSize, ' ');
+    file.seekg(0);
+    file.read(buffer.data(), fileSize);
+
+    // Print buffer.
+    std::println("{}", buffer);
 }
