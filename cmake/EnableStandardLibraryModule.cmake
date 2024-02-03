@@ -4,18 +4,6 @@ if (CMAKE_CXX_STANDARD LESS 23)
     message(FATAL_ERROR "C++23 or newer is required.")
 endif()
 
-# Enable module feature in CMake.
-if(CMAKE_VERSION VERSION_LESS "3.28.0")
-    if(CMAKE_VERSION VERSION_LESS "3.27.0")
-        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
-    else()
-        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7")
-    endif()
-    set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
-else()
-    cmake_policy(VERSION 3.28)
-endif()
-
 # Check compiler support for C++23 Standard Library Module.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
     set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -50,7 +38,24 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
 
     link_libraries(std c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
-    # For MSVC, Standard Library Module is automatically enabled for C++23.
+    # See: https://gitlab.kitware.com/cmake/cmake/-/issues/24922
+
+    # When using /std:c++latest, "Build ISO C++23 Standard Library Modules" defaults to "Yes".
+    # Default to "No" instead.
+    #
+    # As of CMake 3.26.4, there isn't a way to control this property
+    # (https://gitlab.kitware.com/cmake/cmake/-/issues/24922),
+    # We'll use the MSBuild project system instead
+    # (https://learn.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure)
+    file( CONFIGURE OUTPUT "${CMAKE_BINARY_DIR}/Directory.Build.props" CONTENT [==[
+        <Project>
+          <ItemDefinitionGroup>
+            <ClCompile>
+              <BuildStlModules>false</BuildStlModules>
+            </ClCompile>
+          </ItemDefinitionGroup>
+        </Project>
+        ]==] @ONLY )
 else()
     message(FATAL_ERROR "C++23 Standard library module is not supported with current compiler.")
 endif()
