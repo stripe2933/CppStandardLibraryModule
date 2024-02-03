@@ -38,10 +38,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
 
     link_libraries(std c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
+    # Change Windows-specific path (use backslash) to Unix-style path (use forward slash).
+    set(VCTOOLS_INSTALL_PATH $ENV{VCTOOLS_INSTALL_DIR})
+    string(REPLACE "\\" "/" VCTOOLS_INSTALL_PATH "${VCTOOLS_INSTALL_PATH}")
+
     include(FetchContent)
     FetchContent_Declare(
         std
-        URL "file://${VCTOOLS_INSTALL_DIR}/modules"
+        URL "file://${VCTOOLS_INSTALL_PATH}/modules"
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         SYSTEM
     )
