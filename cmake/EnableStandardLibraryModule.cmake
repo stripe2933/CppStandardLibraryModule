@@ -38,24 +38,25 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
 
     link_libraries(std c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
-    # See: https://gitlab.kitware.com/cmake/cmake/-/issues/24922
+    include(FetchContent)
+    FetchContent_Declare(
+        std
+        URL "file://${VCTOOLS_INSTALL_DIR}/modules"
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        SYSTEM
+    )
+    FetchContent_MakeAvailable(std)
 
-    # When using /std:c++latest, "Build ISO C++23 Standard Library Modules" defaults to "Yes".
-    # Default to "No" instead.
-    #
-    # As of CMake 3.26.4, there isn't a way to control this property
-    # (https://gitlab.kitware.com/cmake/cmake/-/issues/24922),
-    # We'll use the MSBuild project system instead
-    # (https://learn.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure)
-    file( CONFIGURE OUTPUT "${CMAKE_BINARY_DIR}/Directory.Build.props" CONTENT [==[
-        <Project>
-          <ItemDefinitionGroup>
-            <ClCompile>
-              <BuildStlModules>false</BuildStlModules>
-            </ClCompile>
-          </ItemDefinitionGroup>
-        </Project>
-        ]==] @ONLY )
+    add_library(std)
+    target_sources(std PUBLIC
+        FILE_SET CXX_MODULES
+        BASE_DIRS ${std_SOURCE_DIR}
+        FILES
+            ${std_SOURCE_DIR}/std.ixx
+            ${std_SOURCE_DIR}/std.compat.ixx
+    )
+
+    link_libraries(std c++)
 else()
     message(FATAL_ERROR "C++23 Standard library module is not supported with current compiler.")
 endif()
