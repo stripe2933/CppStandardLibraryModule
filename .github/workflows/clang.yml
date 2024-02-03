@@ -19,7 +19,9 @@ jobs:
           git clone https://github.com/llvm/llvm-project.git
           cd llvm-project
           mkdir build
-          cmake -G Ninja -S runtimes -B build -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
+          cmake -G Ninja -S runtimes -B build \
+            -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+            -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@17)/bin/clang++
           ninja -C build
           cd ../
 
