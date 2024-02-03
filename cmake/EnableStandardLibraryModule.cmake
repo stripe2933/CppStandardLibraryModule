@@ -46,7 +46,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
             ${std_SOURCE_DIR}/std.cppm
             ${std_SOURCE_DIR}/std.compat.cppm
     )
-    target_compile_options(std PRIVATE -Wreserved-module-identifier)
+    target_compile_options(std PUBLIC -Wreserved-module-identifier)
 
     link_libraries(std c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
