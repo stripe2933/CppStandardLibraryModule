@@ -24,7 +24,8 @@ project(CppStandardLibraryModule)
 set(CMAKE_CXX_STANDARD 23)
 
 # --------------------
-# Include CMake scripts.
+# Enable C++20 module support in CMake.
+# You can omit this code when you're using CMake ≥ 3.28.
 # --------------------
 
 if (CMAKE_VERSION VERSION_LESS "3.28.0")
