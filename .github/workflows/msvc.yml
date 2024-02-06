@@ -1,4 +1,4 @@
-name: Windows
+name: MSVC
 
 on: [push, pull_request]
 
@@ -10,7 +10,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: seanmiddleditch/gha-setup-vsdevenv@master
+      - name: Use Visual Studio devenv
+        uses: seanmiddleditch/gha-setup-vsdevenv@master
 
       - name: Configure
         run: |
