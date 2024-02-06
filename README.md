@@ -65,6 +65,8 @@ int main(){
 }
 ```
 
+Or simply, you can just clone this template repository.
+
 ### Clang
 
 At first, you should manually build module for now. Here's the step:
