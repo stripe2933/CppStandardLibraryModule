@@ -5,6 +5,20 @@
 
 Enable [C++23 standard library module feature, a.k.a. `import std` (P2465R3)](https://wg21.link/P2465R3) in your CMake (≥ 3.26) project.
 
+> [!IMPORTANT]
+> As of February 20, 2024, the Clang CI is currently experiencing failures. During the initial build, you may encounter the following error message, resulting in a build failure:
+> 
+> ```
+> fatal error: module file '/CppStandardLibraryModule/cmake-build-debug/_deps/std-build/CMakeFiles/std.dir/std.pcm' not found: module file not found
+>    93 | export import std;
+>       |        ^
+> 1 error generated.
+> [5/12] Scanning /CppStandardLibraryModule/cmake-build-debug/_deps/std-src/std.cppm for CXX dependencies
+> ninja: build stopped: subcommand failed.
+> ```
+> 
+> However, a subsequent build attempt is expected to succeed (re-enter the following command: `ninja -C build`). This issue appears to be related to module dependencies and can be resolved by retrying the build. If the problem persists, please let me know.
+
 ## How to do?
 
 There are prerequisites for using this repository.
@@ -58,7 +72,7 @@ add_executable(CppStandardLibraryModule main.cpp)
 `main.cpp`
 ```c++
 import std;
-// You can also use import std.cppm for C headers.
+// You can also use import std.compat for C headers.
 
 int main(){
     std::println("Hello world!");
@@ -86,7 +100,7 @@ After that, specify the CMake variable `LIBCXX_BUILD` to your custom module buil
 cd <your-project-dir>
 mkdir build
 CXX=clang++17 cmake -S . -B build -G Ninja -DLIBCXX_BUILD=<build-dir>
-ninja -C build
+ninja -C build # It might be failed at first time (see above), but it will be succeeded at second time.
 # Your executable will be at ./build
 ```
 
