@@ -26,17 +26,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     )
     FetchContent_MakeAvailable(std)
 
-    add_library(std)
-    target_sources(std PUBLIC
-        FILE_SET CXX_MODULES
-        BASE_DIRS ${std_SOURCE_DIR}
-        FILES
-            ${std_SOURCE_DIR}/std.cppm
-            ${std_SOURCE_DIR}/std.compat.cppm
-    )
-    target_compile_options(std PUBLIC -Wno-reserved-module-identifier)
-
     link_libraries(std c++)
+    link_libraries(std.compat c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
     # Change Windows-specific path (use backslash) to Unix-style path (use forward slash).
     set(VCTOOLS_INSTALL_PATH ${VCTOOLS_INSTALL_DIR})
