@@ -3,7 +3,7 @@ name: Clang
 on:
   push:
     branches:
-      - main
+      - '**'
   pull_request:
     branches:
       - main
