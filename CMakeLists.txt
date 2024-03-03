@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 project(CppStandardLibraryModule)
 
-set(CMAKE_CXX_STANDARD 23)
-
 # --------------------
 # Enable C++20 module support in CMake.
 # You can omit this code when you're using CMake ≥ 3.28.

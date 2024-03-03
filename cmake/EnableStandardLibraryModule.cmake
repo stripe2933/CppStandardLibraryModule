@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
 
-if (CMAKE_CXX_STANDARD LESS 23)
-    message(FATAL_ERROR "C++23 or newer is required.")
-endif()
-
 # Check compiler support for C++23 Standard Library Module.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
+    if (CMAKE_CXX_STANDARD LESS 20)
+        message(FATAL_ERROR "C++20 or newer is required.")
+    endif()
+
     set(CMAKE_CXX_STANDARD_REQUIRED YES)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -29,6 +29,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     link_libraries(std c++)
     link_libraries(std.compat c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
+    if (CMAKE_CXX_STANDARD LESS 23)
+        message(FATAL_ERROR "C++23 or newer is required.")
+    endif()
+
     # Change Windows-specific path (use backslash) to Unix-style path (use forward slash).
     set(VCTOOLS_INSTALL_PATH ${VCTOOLS_INSTALL_DIR})
     string(REPLACE "\\" "/" VCTOOLS_INSTALL_PATH "${VCTOOLS_INSTALL_PATH}")
