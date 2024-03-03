@@ -14,6 +14,10 @@ jobs:
   build:
     runs-on: macos-latest
 
+    strategy:
+      matrix:
+        std_version: [20, 23]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,6 +44,7 @@ jobs:
           CC=$(brew --prefix llvm@17)/bin/clang-17 \
           CXX=$(brew --prefix llvm@17)/bin/clang++ \
           cmake -S . -G "Ninja" -B build \
+            -DCMAKE_CXX_STANDARD=${{ matrix.std_version }} \
             -DLIBCXX_BUILD=${{ github.workspace }}/llvm-project/build
 
       - name: Build

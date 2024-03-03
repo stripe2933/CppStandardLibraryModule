@@ -18,5 +18,5 @@ int main() {
     file.read(buffer.data(), fileSize);
 
     // Print buffer.
-    std::println("{}", buffer);
+    std::cout << buffer;
 }

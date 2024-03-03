@@ -4,12 +4,13 @@
 ![MSVC CI](https://github.com/stripe2933/CppStandardLibraryModule/actions/workflows/msvc.yml/badge.svg)
 
 Enable [C++23 standard library module feature, a.k.a. `import std` (P2465R3)](https://wg21.link/P2465R3) in your CMake (≥ 3.26) project.
+It also supported in C++20 as compiler extension.
 
 ## How to do?
 
 There are prerequisites for using this repository.
 
-- You need C++23 conformant compiler with standard library module, which is currently available only for 
+- You need C++20 conformant compiler with standard library module, which is currently available only for 
 [Clang ≥ 17 with custom module build](https://libcxx.llvm.org/Modules.html) and [MSVC ≥ 19.36](https://learn.microsoft.com/en-us/cpp/cpp/tutorial-import-stl-named-module?view=msvc-170).
 - You need CMake ≥ 3.26 for module support in CMake.
 - If you're using Clang, Ninja ≥ 1.11 is required.
@@ -20,8 +21,6 @@ All prerequisites satisfied, your simplest program will be:
 ```cmake
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 project(CppStandardLibraryModule)
-
-set(CMAKE_CXX_STANDARD 23)
 
 # --------------------
 # Enable C++20 module support in CMake.
@@ -85,7 +84,9 @@ After that, specify the CMake variable `LIBCXX_BUILD` to your custom module buil
 ```shell
 cd <your-project-dir>
 mkdir build
-CXX=clang++17 cmake -S . -B build -G Ninja -DLIBCXX_BUILD=<build-dir>
+CXX=clang++17 cmake -S . -B build -G Ninja \
+  -DCMAKE_CXX_STANDARD=20 \ # Specify the std version you want, supported: 20, 23.
+  -DLIBCXX_BUILD=<build-dir>
 ninja -j1 std -C build # For Clang, you must build std module first. See: https://github.com/llvm/llvm-project/commit/fc0e9c8315564288f9079a633892abadace534cf
 ninja -C build
 # Your executable will be at /build
@@ -102,7 +103,9 @@ in detail.
 ```shell
 cd <your-project-dir>
 mkdir build
-cmake -S . -B build -G "Visual Studio 17 2022" -T v143 -DVCTOOLS_INSTALL_DIR="$env:VCToolsInstallDir"
+cmake -S . -B build -G "Visual Studio 17 2022" -T v143 `
+  -DCMAKE_CXX_STANDARD=23 ` # For now, MSVC only supports C++23 (C++20 support will be added later)
+  -DVCTOOLS_INSTALL_DIR="$env:VCToolsInstallDir"
 cmake --build build -j4
 # Your executable will be at build\Release
 ```
