@@ -33,14 +33,12 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VER
         message(FATAL_ERROR "C++23 or newer is required.")
     endif()
 
-    # Change Windows-specific path (use backslash) to Unix-style path (use forward slash).
-    set(VCTOOLS_INSTALL_PATH ${VCTOOLS_INSTALL_DIR})
-    string(REPLACE "\\" "/" VCTOOLS_INSTALL_PATH "${VCTOOLS_INSTALL_PATH}")
+    file(TO_CMAKE_PATH "${VCTOOLS_INSTALL_DIR}" VCTOOLS_INSTALL_DIR)
 
     include(FetchContent)
     FetchContent_Declare(
         std
-        URL "file://${VCTOOLS_INSTALL_PATH}modules"
+        URL "file://${VCTOOLS_INSTALL_DIR}/modules"
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         SYSTEM
     )
