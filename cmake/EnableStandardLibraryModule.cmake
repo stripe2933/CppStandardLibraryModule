@@ -38,7 +38,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VER
     include(FetchContent)
     FetchContent_Declare(
         std
-        URL "file://${VCTOOLS_INSTALL_DIR}modules"
+        URL "file://${VCTOOLS_INSTALL_DIR}/modules"
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
         SYSTEM
     )
