@@ -26,7 +26,7 @@ jobs:
       - name: Add homebrew to PATH (Linux only)
         if: runner.os == 'Linux'
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
       - name: Get LLVM 17 and Ninja via Homebrew
         run: |
