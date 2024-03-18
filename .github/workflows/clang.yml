@@ -12,15 +12,21 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         std_version: [20, 23]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Add homebrew to PATH (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
       - name: Get LLVM 17 and Ninja via Homebrew
         run: |
