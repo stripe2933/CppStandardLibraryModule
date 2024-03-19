@@ -87,12 +87,11 @@ mkdir build
 CXX=clang++17 cmake -S . -B build -G Ninja \
   -DCMAKE_CXX_STANDARD=20 \ # Specify the std version you want, supported: 20, 23.
   -DLIBCXX_BUILD=<build-dir>
-ninja -j1 std -C build # For Clang, you must build std module first. See: https://github.com/llvm/llvm-project/commit/fc0e9c8315564288f9079a633892abadace534cf
 ninja -C build
 # Your executable will be at /build
 ```
 
-Here's [the GitHub CI code for Clang](https://github.com/stripe2933/CppStandardLibraryModule/blob/main/.github/workflows/clang.yml) for your insight.
+Here's [the GitHub CI code for Clang](.github/workflows/clang.yml) for your insight.
 
 ### MSVC
 
@@ -110,4 +109,4 @@ cmake --build build -j4
 # Your executable will be at build\Release
 ```
 
-Here's [the GitHub CI code for MSVC](https://github.com/stripe2933/CppStandardLibraryModule/blob/main/.github/workflows/msvc.yml) for your insight.
+Here's [the GitHub CI code for MSVC](.github/workflows/msvc.yml) for your insight.

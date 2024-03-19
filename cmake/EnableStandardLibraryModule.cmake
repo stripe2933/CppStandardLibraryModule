@@ -9,14 +9,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     set(CMAKE_CXX_STANDARD_REQUIRED YES)
     set(CMAKE_CXX_EXTENSIONS OFF)
 
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-nostdinc++>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-isystem>)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:${LIBCXX_BUILD}/include/c++/v1>)
-
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-nostdlib++>)
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-L${LIBCXX_BUILD}/lib>)
-    add_link_options($<$<COMPILE_LANGUAGE:CXX>:-Wl,-rpath,${LIBCXX_BUILD}/lib>)
-
     include(FetchContent)
     FetchContent_Declare(
         std
