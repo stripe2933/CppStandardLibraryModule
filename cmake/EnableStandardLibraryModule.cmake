@@ -21,8 +21,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSIO
     link_libraries(std c++)
     link_libraries(std.compat c++)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.36")
-    if (CMAKE_CXX_STANDARD LESS 23)
-        message(FATAL_ERROR "C++23 or newer is required.")
+    if (CMAKE_CXX_STANDARD VERSION_LESS 20)
+        message(FATAL_ERROR "C++20 or newer is required.")
+    elseif (CMAKE_CXX_STANDARD VERSION_LESS 23 AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.38")
+        message(FATAL_ERROR "C++23 Standard library module in C++20 is only supported with MSVC 19.38 or newer.")
     endif()
 
     file(TO_CMAKE_PATH "${VCTOOLS_INSTALL_DIR}" VCTOOLS_INSTALL_DIR)

@@ -14,6 +14,10 @@ jobs:
   build:
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        std_version: [20, 23]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +30,7 @@ jobs:
           mkdir build
           cmake -S . -B build `
             -G "Visual Studio 17 2022" -T v143 `
-            -DCMAKE_CXX_STANDARD=23 `
+            -DCMAKE_CXX_STANDARD=${{ matrix.std_version }} `
             -DVCTOOLS_INSTALL_DIR="$env:VCToolsInstallDir"
 
       - name: Build
