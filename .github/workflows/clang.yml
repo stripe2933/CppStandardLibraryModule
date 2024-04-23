@@ -18,6 +18,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         std_version: [20, 23]
+        clang_version: [17, 18]
 
     steps:
       - name: Checkout
@@ -28,17 +29,15 @@ jobs:
         run: |
           echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
-      - name: Get LLVM 17 and Ninja via Homebrew
+      - name: Get LLVM and Ninja via Homebrew
         run: |
-          brew install llvm@17 ninja
+          brew install llvm@${{ matrix.clang_version }} ninja
 
       - name: Make local build of libc++ with module enabled
         run: |
           git clone https://github.com/llvm/llvm-project.git
           cd llvm-project
           mkdir build
-          CC=$(brew --prefix llvm@17)/bin/clang-17 \
-          CXX=$(brew --prefix llvm@17)/bin/clang++ \
           cmake -G Ninja -S runtimes -B build \
             -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
           ninja -C build
@@ -47,8 +46,7 @@ jobs:
       - name: Configure
         run: |
           mkdir build
-          CC=$(brew --prefix llvm@17)/bin/clang-17 \
-          CXX=$(brew --prefix llvm@17)/bin/clang++ \
+          CXX=$(brew --prefix llvm@${{ matrix.clang_version }})/bin/clang++ \
           cmake -S . -G "Ninja" -B build \
             -DCMAKE_CXX_STANDARD=${{ matrix.std_version }} \
             -DLIBCXX_BUILD=${{ github.workspace }}/llvm-project/build
