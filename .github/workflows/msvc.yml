@@ -28,8 +28,8 @@ jobs:
       - name: Configure
         run: |
           mkdir build
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" -T v143 `
+          cmake -S . -B build                              `
+            -G "Visual Studio 17 2022" -T v143             `
             -DCMAKE_CXX_STANDARD=${{ matrix.std_version }} `
             -DVCTOOLS_INSTALL_DIR="$env:VCToolsInstallDir"
 
