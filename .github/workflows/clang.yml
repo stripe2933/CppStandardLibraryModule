@@ -31,30 +31,37 @@ jobs:
       - name: Get LLVM and Ninja via Homebrew
         run: |
           brew install llvm ninja
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
+          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> "$GITHUB_ENV"
 
-      - name: Make local build of libc++ with module enabled
+      - name: Cache libc++ build
+        id: cache-libcxx
+        uses: actions/cache@v4
+        with:
+          path: llvm-project/build
+          key: ${{ runner.os }}-libcxx
+
+      - name: Make local build of libc++ with Standard Library Module (when cache miss)
+        if: steps.cache-libcxx.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/llvm/llvm-project.git
           cd llvm-project
           mkdir build
-          CC=$(brew --prefix llvm)/bin/clang                    \
-          CXX=$(brew --prefix llvm)/bin/clang++                 \
           cmake -G Ninja -S runtimes -B build                   \
-            -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
+            -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+            -DLLVM_INCLUDE_TESTS=OFF
           ninja -C build
 
       - name: Configure
         run: |
           mkdir build
-          CC=$(brew --prefix llvm)/bin/clang                          \
-          CXX=$(brew --prefix llvm)/bin/clang++                       \
           cmake -S . -G Ninja -B build                                \
             -DCMAKE_CXX_STANDARD=${{ matrix.std_version }}            \
             -DLIBCXX_BUILD=${{ github.workspace }}/llvm-project/build
 
       - name: Build
         run: |
-          ninja -C build
+          cmake --build build -t CppStandardLibraryModule --config Release
 
       - name: Run executable
         run: |
