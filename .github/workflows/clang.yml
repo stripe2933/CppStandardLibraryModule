@@ -28,34 +28,31 @@ jobs:
         run: |
           echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
 
-      - name: Get LLVM 17 and Ninja via Homebrew
+      - name: Get LLVM and Ninja via Homebrew
         run: |
-          brew install llvm@17 ninja
+          brew install llvm ninja
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
+          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> "$GITHUB_ENV"
 
       - name: Make local build of libc++ with module enabled
         run: |
           git clone https://github.com/llvm/llvm-project.git
           cd llvm-project
           mkdir build
-          CC=$(brew --prefix llvm@17)/bin/clang-17 \
-          CXX=$(brew --prefix llvm@17)/bin/clang++ \
-          cmake -G Ninja -S runtimes -B build \
+          cmake -G Ninja -S runtimes -B build                   \
             -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
           ninja -C build
-          cd ../
 
       - name: Configure
         run: |
           mkdir build
-          CC=$(brew --prefix llvm@17)/bin/clang-17 \
-          CXX=$(brew --prefix llvm@17)/bin/clang++ \
-          cmake -S . -G "Ninja" -B build \
-            -DCMAKE_CXX_STANDARD=${{ matrix.std_version }} \
+          cmake -S . -G Ninja -B build                              \
+            -DCMAKE_CXX_STANDARD=${{ matrix.std_version }}            \
             -DLIBCXX_BUILD=${{ github.workspace }}/llvm-project/build
 
       - name: Build
         run: |
-          ninja -C build
+          cmake --build build -t CppStandardLibraryModule --config Release
 
       - name: Run executable
         run: |
