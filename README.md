@@ -19,24 +19,24 @@ All prerequisites satisfied, your simplest program will be:
 
 `CMakeLists.txt`
 ```cmake
-cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28)
 project(CppStandardLibraryModule)
 
 # --------------------
 # Enable C++20 module support in CMake.
-# You can omit this code when you're using CMake ≥ 3.28.
+# Below code must be uncommented when use CMake < 3.28.
 # --------------------
 
-if (CMAKE_VERSION VERSION_LESS "3.28.0")
-    if(CMAKE_VERSION VERSION_LESS "3.27.0")
-        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
-    else()
-        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7")
-    endif()
-    set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
-else()
-    cmake_policy(VERSION 3.28)
-endif()
+#if (CMAKE_VERSION VERSION_LESS "3.28.0")
+#    if(CMAKE_VERSION VERSION_LESS "3.27.0")
+#        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
+#    else()
+#        set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7")
+#    endif()
+#    set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1)
+#else()
+#    cmake_policy(VERSION 3.28)
+#endif()
 
 # --------------------
 # Include CMake scripts.
@@ -57,7 +57,7 @@ add_executable(CppStandardLibraryModule main.cpp)
 `main.cpp`
 ```c++
 import std;
-// You can also use import std.compat for C headers.
+// import std.compat also available.
 
 int main(){
     std::cout << "Hello, world!\n";
@@ -68,35 +68,35 @@ Or simply, you can just clone this template repository.
 
 ### Clang
 
-At first, you should manually build module for now. Here's the step:
+Build Standard Library Module from LLVM repository.
 
 ```shell
 git clone https://github.com/llvm/llvm-project.git
 cd llvm-project
 mkdir build
-CXX=clang++17 cmake -G Ninja -S runtimes -B build \
+cmake -G Ninja -S runtimes -B build \
   -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
 ninja -C build
 ```
 
-After that, specify the CMake variable `LIBCXX_BUILD` to your custom module build directory, which is explained at [Libc++ website](https://libcxx.llvm.org/Modules.html) in detail.
+After that, specify the CMake variable `LIBCXX_BUILD` to your custom module build directory, explained at [Libc++ website](https://libcxx.llvm.org/Modules.html) in detail.
 
 ```shell
 cd <your-project-dir>
 mkdir build
-CXX=clang++17 cmake -S . -B build -G Ninja \
-  -DCMAKE_CXX_STANDARD=20                  \
+cmake -S . -B build -G Ninja \
+  -DCMAKE_CXX_STANDARD=20    \
   -DLIBCXX_BUILD=<build-dir>
 ninja -C build
 # Your executable will be at /build
 ```
 
-Here's [the GitHub CI code for Clang](.github/workflows/clang.yml) for your insight.
+Here's [the Clang CI](.github/workflows/clang.yml) for your insight.
 
 ### MSVC
 
-You should specify the CMake variable `VCTOOLS_INSTALL_DIR`, which can be directly fetched 
-via `$env:VCToolsInstallDir` in x86 Native Tools Command Prompt for VS, which is explained at [Microsoft documentation](https://learn.microsoft.com/en-us/cpp/cpp/tutorial-import-stl-named-module?view=msvc-170)
+Specify the CMake variable `VCTOOLS_INSTALL_DIR`, which can be directly fetched 
+via `$env:VCToolsInstallDir` in *x86 Native Tools Command Prompt for VS*, explained at [Microsoft documentation](https://learn.microsoft.com/en-us/cpp/cpp/tutorial-import-stl-named-module?view=msvc-170)
 in detail.
 
 ```shell
@@ -109,4 +109,4 @@ cmake --build build -j4
 # Your executable will be at build\Release
 ```
 
-Here's [the GitHub CI code for MSVC](.github/workflows/msvc.yml) for your insight.
+Here's [the MSVC CI](.github/workflows/msvc.yml) for your insight.
