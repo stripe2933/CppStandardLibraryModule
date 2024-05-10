@@ -16,19 +16,22 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-24.04, macos-latest]
         std_version: [20, 23]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Add homebrew to PATH (Linux only)
+      - name: Get Ninja via apt-get (Linux only)
         if: runner.os == 'Linux'
         run: |
-          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+          sudo apt-get install ninja-build
+          echo "CC=/usr/bin/clang-18" >> "$GITHUB_ENV"
+          echo "CXX=/usr/bin/clang++-18" >> "$GITHUB_ENV"
 
-      - name: Get LLVM and Ninja via Homebrew
+      - name: Get LLVM and Ninja via Homebrew (macOS only)
+        if: runner.os == 'macOS'
         run: |
           brew install llvm ninja
           echo "CC=$(brew --prefix llvm)/bin/clang" >> "$GITHUB_ENV"
